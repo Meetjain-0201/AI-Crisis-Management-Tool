@@ -20,32 +20,43 @@ def quick_train():
     
     gan = GANGenerator()
     
-    # Added adversarial training
-    gan.discriminator.compile(loss='binary_crossentropy', optimizer=tf.keras.optimizers.Adam(0.0002, 0.5))
-    gan.combined.compile(loss='binary_crossentropy', optimizer=tf.keras.optimizers.Adam(0.0002, 0.5))
+    # Compile networks
+    gan.discriminator.compile(
+        loss='binary_crossentropy', 
+        optimizer=tf.keras.optimizers.Adam(0.0002, 0.5),
+        metrics=['accuracy']
+    )
     
-    # Training with callbacks
-    callbacks = [
-        EarlyStopping(patience=5, restore_best_weights=True),
-        ModelCheckpoint('gan_weights.h5', save_best_only=True)
-    ]
+    gan.combined.compile(
+        loss='binary_crossentropy', 
+        optimizer=tf.keras.optimizers.Adam(0.0002, 0.5)
+    )
     
-    # Improved training loop with discriminator
-    for epoch in range(100):
+    # Training parameters
+    batch_size = 32
+    epochs = 100
+    
+    # Training loop
+    for epoch in range(epochs):
         # Train discriminator
-        idx = np.random.randint(0, X.shape[0], 32)
+        idx = np.random.randint(0, X.shape[0], batch_size)
         real_data = Y[idx]
         fake_data = gan.generator.predict(X[idx], verbose=0)
-        d_loss_real = gan.discriminator.train_on_batch(real_data, np.ones((32, 1)))
-        d_loss_fake = gan.discriminator.train_on_batch(fake_data, np.zeros((32, 1)))
+        
+        d_loss_real = gan.discriminator.train_on_batch(real_data, np.ones((batch_size, 1)))
+        d_loss_fake = gan.discriminator.train_on_batch(fake_data, np.zeros((batch_size, 1)))
         d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
         
         # Train generator
-        g_loss = gan.combined.train_on_batch(X[idx], np.ones((32, 1)))
+        g_loss = gan.combined.train_on_batch(X[idx], np.ones((batch_size, 1)))
         
+        # Print progress
         if epoch % 10 == 0:
-            print(f"Epoch {epoch} | D Loss: {d_loss[0]:.4f} | G Loss: {g_loss:.4f}")
+            print(f"Epoch {epoch + 1}/{epochs} | D Loss: {d_loss[0]:.4f} | G Loss: {g_loss:.4f} | D Acc: {d_loss[1]:.2f}")
     
+    # Save weights
+    gan.generator.save_weights('gan_generator_weights.h5')
+    gan.discriminator.save_weights('gan_discriminator_weights.h5')
     print("Training completed. Weights saved.")
 
 if __name__ == "__main__":
