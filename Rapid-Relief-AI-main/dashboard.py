@@ -103,10 +103,49 @@ def get_marker_properties(row, view_type):
             return 'rgba(255,165,0,0.6)', f"Blocked roads: {blocks}"
         return 'rgba(0,255,0,0.6)', f"Blocked roads: {blocks}"
 
+# Added caching and error handling
+@st.cache_data(ttl=10, show_spinner=False)
+def load_data():
+    try:
+        data = list(synthetic_collection.find({}, {'_id': 0}).sort('timestamp', -1).limit(5))
+        return pd.DataFrame(data)
+    except Exception as e:
+        st.error(f"Data loading error: {e}")
+        return pd.DataFrame()
+
+# Added time range selector
+def time_filtered_data(df):
+    default_end = datetime.now()
+    default_start = default_end - timedelta(hours=24)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        start_date = st.date_input("Start date", default_start)
+        start_time = st.time_input("Start time", default_start.time())
+    with col2:
+        end_date = st.date_input("End date", default_end)
+        end_time = st.time_input("End time", default_end.time())
+    
+    start_dt = datetime.combine(start_date, start_time)
+    end_dt = datetime.combine(end_date, end_time)
+    
+    return df[(df['timestamp'] >= start_dt) & (df['timestamp'] <= end_dt)]
+    
 def create_map(df):
     """Create an interactive map with resource status indicators"""
     fig = go.Figure()
-    
+        # Add animated trajectory layer
+    history_df = load_historical_data()  # Implement historical data loading
+    for city in df['region_name'].unique():
+        city_df = history_df[history_df['region_name'] == city]
+        fig.add_trace(go.Scattermapbox(
+            lat=city_df['lat'],
+            lon=city_df['lon'],
+            mode='lines+markers',
+            marker=dict(size=8, color='rgba(100,100,100,0.5)'),
+            line=dict(width=1, color='gray'),
+            name=f"{city} Trend"
+        ))
     # Create legend traces
     legend_colors = COLOR_MAPPINGS[st.session_state.selected_map_view]
     for color, label in legend_colors.items():
