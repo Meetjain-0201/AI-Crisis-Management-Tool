@@ -6,10 +6,14 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 import time
 
-# Initialize MongoDB connection
-client = MongoClient("mongodb://localhost:27017/")
-db = client["resource_allocation"]
-synthetic_collection = db["synthetic_data"]
+try:
+    client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=5000)
+    db = client["resource_allocation"]
+    synthetic_collection = db["gan_data"]  # Ensure this matches your collection name
+    print("Connected to MongoDB successfully!")
+except Exception as e:
+    st.error(f"Failed to connect to MongoDB: {e}")
+    synthetic_collection = None  # Set to None if connection fails
 
 # City coordinates
 CITY_COORDINATES = {
@@ -69,9 +73,30 @@ if 'map_style' not in st.session_state:
     st.session_state.map_style = 'Basic'
 
 def load_data():
-    """Load data from MongoDB"""
-    data = list(synthetic_collection.find({}, {'_id': 0}))
-    return pd.DataFrame(data)
+    """Load data from MongoDB and validate structure"""
+    if synthetic_collection is None:
+        st.error("MongoDB connection is not established.")
+        return pd.DataFrame()
+    
+    try:
+        data = list(synthetic_collection.find({}, {'_id': 0}))
+        df = pd.DataFrame(data)
+        
+        # Validate required columns
+        required_columns = [
+            'region_name', 'severity_score', 'road_block_status', 
+            'population_density', 'warehouse_stock_status', 'resource_needs'
+        ]
+        
+        for col in required_columns:
+            if col not in df.columns:
+                st.error(f"Missing required column in data: {col}")
+                return pd.DataFrame()  # Return empty DataFrame if validation fails
+        
+        return df
+    except Exception as e:
+        st.error(f"Data loading error: {e}")
+        return pd.DataFrame()
 
 def get_marker_properties(row, view_type):
     """Get marker properties based on selected view"""
@@ -131,22 +156,61 @@ def time_filtered_data(df):
     
     return df[(df['timestamp'] >= start_dt) & (df['timestamp'] <= end_dt)]
     
+# Add this function at the top of the file, after the imports
+def load_historical_data(hours=24):
+    """Load historical data from MongoDB for the specified time window"""
+    try:
+        end_time = datetime.now()
+        start_time = end_time - timedelta(hours=hours)
+        
+        # Query for historical data
+        history_data = list(synthetic_collection.find({
+            "timestamp": {
+                "$gte": start_time,
+                "$lte": end_time
+            }
+        }, {'_id': 0}))
+        
+        # Convert to DataFrame and add coordinates
+        df = pd.DataFrame(history_data)
+        if not df.empty:
+            df['lat'] = df['region_name'].map(lambda x: CITY_COORDINATES[x]['lat'])
+            df['lon'] = df['region_name'].map(lambda x: CITY_COORDINATES[x]['lon'])
+        
+        return df
+    except Exception as e:
+        st.error(f"Error loading historical data: {e}")
+        return pd.DataFrame()
+
 def create_map(df):
     """Create an interactive map with resource status indicators"""
+    if df.empty or 'region_name' not in df.columns:
+        st.warning("No valid data available for map visualization.")
+        return go.Figure()  # Return an empty figure
+    
     fig = go.Figure()
-        # Add animated trajectory layer
-    history_df = load_historical_data()  # Implement historical data loading
-    for city in df['region_name'].unique():
-        city_df = history_df[history_df['region_name'] == city]
-        fig.add_trace(go.Scattermapbox(
-            lat=city_df['lat'],
-            lon=city_df['lon'],
-            mode='lines+markers',
-            marker=dict(size=8, color='rgba(100,100,100,0.5)'),
-            line=dict(width=1, color='gray'),
-            name=f"{city} Trend"
-        ))
-    # Create legend traces
+    
+    # Add historical trajectory layer if data exists
+    try:
+        history_df = load_historical_data(hours=6)  # Last 6 hours of data
+        if not history_df.empty and 'region_name' in history_df.columns:
+            for city in df['region_name'].unique():
+                city_df = history_df[history_df['region_name'] == city]
+                if not city_df.empty:
+                    fig.add_trace(go.Scattermapbox(
+                        lat=city_df['lat'],
+                        lon=city_df['lon'],
+                        mode='lines+markers',
+                        marker=dict(size=8, color='rgba(100,100,100,0.5)'),
+                        line=dict(width=1, color='gray'),
+                        name=f"{city} Trend",
+                        hoverinfo='none',
+                        showlegend=True
+                    ))
+    except Exception as e:
+        st.warning(f"Could not add historical data: {e}")
+    
+    # Add legend traces
     legend_colors = COLOR_MAPPINGS[st.session_state.selected_map_view]
     for color, label in legend_colors.items():
         rgba_color = color.replace('red', 'rgba(255,0,0,0.6)')\
@@ -165,6 +229,9 @@ def create_map(df):
     
     # Add city markers
     for _, row in df.iterrows():
+        if 'region_name' not in row or row['region_name'] not in CITY_COORDINATES:
+            continue  # Skip invalid rows
+        
         city_name = row['region_name']
         coords = CITY_COORDINATES[city_name]
         
