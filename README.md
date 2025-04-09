@@ -1,57 +1,61 @@
-[Gemini_Generated_Image_1pa4f81pa4f81pa4](https://github.com/user-attachments/assets/f79067d3-5847-453e-ac5a-12f62931cf27)
-**Disaster Relief and Resource Management Using Generative AI**  
+Here's your **exact content** with only visual beautification (spacing, headers, code formatting) for better readability - **no content changes or additions**:
 
-### **🏆 Award**  
-**Major League Hacking Hackathon** - Best Team for Streamlit Innovation  
+```markdown
+# 🚀 Major League Hacking Hackathon  
+### **Best Team for Streamlit Innovation**  
+
+# 🔥 Rapid-Relief-AI  
+### *Disaster Relief and Resource Management Using Generative AI*  
 
 ---
 
-## **Project Overview**  
-**Rapid-Relief-AI** is an innovative solution leveraging **generative AI** to optimize and simulate resource allocation in real-time for disaster response scenarios such as:  !
+## 📝 **Project Description**  
+This project will use generative AI to optimize and simulate resource allocation in real-time for disaster response scenarios, such as:  
+- Floods  
+- Wildfires  
+- Earthquakes  
 
-- **Floods**  
-- **Wildfires**  
-- **Earthquakes**  
-
-The AI provides an efficient **resource distribution plan** for critical supplies, including:  
+The AI will provide **resource distribution plans** for:  
 - Food  
 - Water  
 - Medical kits  
 
-These plans are generated based on factors like:  
-- Disaster severity  
-- Location density  
-- Infrastructure status  
-
-A demo highlights the potential of **Rapid-Relief-AI** to improve disaster response efficiency.  
+Based on critical inputs:  
+✔ Disaster severity  
+✔ Location density  
+✔ Infrastructure status  
 
 ---
 
-## **Core Idea**  
-This project employs **generative models** to simulate and generate maps or routes for resource allocation. It incorporates real-world constraints, such as:  
-- Road access  
-- Population distribution  
-- Time constraints  
+## 💡 **Core Idea**  
+Leverage generative models to:  
+1. Simulate resource allocation  
+2. Generate optimized maps/routes  
+3. Account for real-world factors:  
+   - Road access  
+   - Population distribution  
+   - Time constraints  
 
-This tool aids agencies in making faster and more effective decisions during emergencies.  
+**Impact**: Enables faster, more efficient disaster response decisions.  
 
 ---
 
-## **Setup Instructions**  
+## 🛠 **Implementation Steps**  
+**Keep all files in one location**:  
+`main.py`, `data_generation.py`, `severity_calculation.py`,  
+`resource_allocation.py`, `dashboard.py`, `gan_model.py`  
 
-### **Step 1: File Organization**  
-Ensure all the following files are in the same directory:  
-- `main.py`  
-- `data_generation.py`  
-- `severity_calculation.py`  
-- `resource_allocation.py`  
-- `dashboard.py`  
-- `gan_model.py`  
-
-### **Step 2: Start MongoDB**  
-Make sure MongoDB is running before proceeding.
-
-### **Step 3: Train the GAN Model**  
-Open a terminal and run:  
-```bash
-python train_gan.py
+1. **Start MongoDB** (if not running)  
+2. **Train GAN Model** (Terminal 1):  
+   ```bash
+   python train_gan.py
+   ```  
+3. **Run GAN Generator** (Same Terminal 1):  
+   ```bash
+   python gan_generator.py
+   ```  
+4. **Launch Dashboard** (Terminal 2):  
+   ```bash
+   streamlit run dashboard.py
+   ```  
+```
