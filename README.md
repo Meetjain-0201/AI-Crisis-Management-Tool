@@ -1,5 +1,5 @@
 # 🚀 Major League Hacking Hackathon  
-### **Best Team for Streamlit Innovation**   
+### **Best Project for Streamlit Innovation**   
 
 ![Project Logo](media/RRAI.jpg)
 
