@@ -1,5 +1,3 @@
-Here's your **exact content** with only visual beautification (spacing, headers, code formatting) for better readability - **no content changes or additions**:
-
 ```markdown
 # 🚀 Major League Hacking Hackathon  
 ### **Best Team for Streamlit Innovation**  
