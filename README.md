@@ -4,6 +4,13 @@
 # 🔥 Rapid-Relief-AI  
 ### *Disaster Relief and Resource Management Using Generative AI*  
 
+![Project Logo](media/RRAI.jpg)
+
+---
+
+## 📹 Demo Video
+[Download demo video](path/to/your/video.mp4)
+
 ---
 
 ## 📝 **Project Description**  
@@ -55,4 +62,3 @@ Leverage generative models to:
    ```bash
    streamlit run dashboard.py
    ```  
-```
