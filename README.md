@@ -1,4 +1,3 @@
-```markdown
 # 🚀 Major League Hacking Hackathon  
 ### **Best Team for Streamlit Innovation**  
 
