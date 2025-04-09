@@ -7,8 +7,16 @@
 
 ---
 
-## 📹 Demo Video
-[Download demo video](path/to/your/video.mp4)
+## 📹 Live Demo
+<div align="center">
+  <a href="https://drive.google.com/file/d/1JL8gWuimD-GdVqNu1zLzw77Z60RqYVQc/view?usp=sharing" target="_blank">
+    <img src="https://img.icons8.com/color/96/000000/google-drive.png" width="100" alt="Drive icon"/>
+    <br>
+    <strong>▶ Click to Play Demo Video</strong>
+  </a>
+  <br>
+  <sub>Opens in new tab | Google Drive</sub>
+</div>
 
 ---
 
