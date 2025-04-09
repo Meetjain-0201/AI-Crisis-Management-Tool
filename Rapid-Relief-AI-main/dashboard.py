@@ -9,7 +9,7 @@ import time
 try:
     client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=5000)
     db = client["resource_allocation"]
-    synthetic_collection = db["gan_data"]  # Ensure this matches your collection name
+    synthetic_collection = db["gan_data"]  
     print("Connected to MongoDB successfully!")
 except Exception as e:
     st.error(f"Failed to connect to MongoDB: {e}")
