@@ -1,4 +1,4 @@
-# Rapid-Relief-AI  
+[Gemini_Generated_Image_1pa4f81pa4f81pa4](https://github.com/user-attachments/assets/f79067d3-5847-453e-ac5a-12f62931cf27)
 **Disaster Relief and Resource Management Using Generative AI**  
 
 ### **🏆 Award**  
@@ -7,7 +7,8 @@
 ---
 
 ## **Project Overview**  
-**Rapid-Relief-AI** is an innovative solution leveraging **generative AI** to optimize and simulate resource allocation in real-time for disaster response scenarios such as:  
+**Rapid-Relief-AI** is an innovative solution leveraging **generative AI** to optimize and simulate resource allocation in real-time for disaster response scenarios such as:  !
+
 - **Floods**  
 - **Wildfires**  
 - **Earthquakes**  
