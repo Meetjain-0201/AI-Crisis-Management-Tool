@@ -1,7 +1,5 @@
 # 🚀 Major League Hacking Hackathon  
-### **Best Team for Streamlit Innovation**  
-
-# 🔥 Disaster Relief and Resource Management Using Generative AI  
+### **Best Team for Streamlit Innovation**   
 
 ![Project Logo](media/RRAI.jpg)
 
